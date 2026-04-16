@@ -31,7 +31,7 @@
   .main { padding: 12px; max-width: 100%; }
   .bm-card { background: #fff; border-radius: 10px; padding: 14px 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); flex-wrap: wrap; }
   .bm-label { font-size: 14px; font-weight: 600; color: #374151; white-space: nowrap; }
-  .bm-input { font-family: 'Share Tech Mono', monospace; font-size: 18px; font-weight: 700; color: #1a2332; border: 2px solid #d1d5db; border-radius: 6px; padding: 8px 10px; width: 140px; text-align: right; }
+  .bm-input { font-family: 'Share Tech Mono', monospace; font-size: 18px; font-weight: 700; color: #111827; border: 2px solid #d1d5db; border-radius: 6px; padding: 8px 10px; width: 140px; text-align: right; }
   .bm-input:focus { outline: none; border-color: #f59e0b; }
   .bm-unit { font-size: 14px; color: #9ca3af; }
   .site-name-row { background: #fff; border-radius: 10px; padding: 12px 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
@@ -40,14 +40,14 @@
   .site-name-input:focus { outline: none; border-color: #f59e0b; }
   .table-card { background: #fff; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); overflow: hidden; }
   .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  table { width: max-content; min-width: 100%; border-collapse: collapse; font-size: 13px; }
   thead tr { background: #1a2332; color: #fff; }
   th { padding: 10px 4px; text-align: center; font-size: 11px; font-weight: 600; white-space: pre-line; line-height: 1.3; border-right: 1px solid #243044; }
   th:last-child { border-right: none; }
   tbody tr:nth-child(even) { background: #f9fafb; }
   tbody tr { border-bottom: 1px solid #e5e7eb; }
   td { padding: 4px 3px; vertical-align: middle; }
-  .cell-input { border: 1px solid #e5e7eb; border-radius: 4px; padding: 8px 4px; font-size: 14px; font-family: 'Share Tech Mono', monospace; width: 100%; text-align: right; background: #fff; -webkit-appearance: none; min-height: 38px; }
+  .cell-input { border: 1px solid #e5e7eb; border-radius: 4px; padding: 8px 4px; font-size: 14px; font-family: 'Share Tech Mono', monospace; width: 100%; text-align: right; background: #fff; color: #111827; -webkit-appearance: none; min-height: 38px; }
   .cell-input:focus { outline: none; border-color: #f59e0b; }
   .cell-input.bs-filled { background: #fffbeb; }
   .cell-input.fs-filled { background: #eff6ff; }
@@ -265,15 +265,15 @@ function renderMain() {
     + '<span class="site-name-label">現場名</span>'
     + '<input class="site-name-input" type="text" id="siteNameInput" value="' + esc(site.name) + '" maxlength="20" autocomplete="off"></div>'
     + '<div class="table-card"><div class="table-wrap"><table><thead><tr>'
-    + '<th style="width:50px">測点</th>'
-    + '<th style="width:90px">後視\nBS</th>'
-    + '<th style="width:82px">器械高\nIH</th>'
-    + '<th style="width:90px">前視\nFS</th>'
-    + '<th style="width:82px">地盤高\nGH</th>'
-    + '<th style="width:82px">計画高</th>'
-    + '<th style="width:76px">差\nGH-計画高</th>'
-    + '<th style="width:86px">備考</th>'
-    + '<th style="width:36px"></th>'
+    + '<th style="width:52px">測点</th>'
+    + '<th style="width:110px">後視\nBS</th>'
+    + '<th style="width:100px">器械高\nIH</th>'
+    + '<th style="width:110px">前視\nFS</th>'
+    + '<th style="width:100px">地盤高\nGH</th>'
+    + '<th style="width:100px">計画高</th>'
+    + '<th style="width:100px">差\nGH-計画高</th>'
+    + '<th style="width:100px">備考</th>'
+    + '<th style="width:40px"></th>'
     + '</tr></thead><tbody id="tableBody">';
 
   for (var j = 0; j < computed.length; j++) {
