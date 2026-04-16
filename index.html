@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>測量野帳</title>
 <link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#1a2332">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="測量野帳">
-<title>測量野帳</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -121,6 +121,7 @@ var STORAGE_KEY = 'sokuryo_yacho_v1';
 var sites = [];
 var activeSiteId = null;
 var saveTimer = null;
+var NA = 'autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"';
 
 function uid() { return Math.random().toString(36).substr(2,9); }
 function round3(v) { return Math.round(v * 1000) / 1000; }
@@ -133,17 +134,13 @@ function newSite(name) {
   return { id: id, name: name, bm: '10.000', rows: [newRow(1)] };
 }
 
-// ===== 保存・読込 =====
 function saveData() {
   try {
     var payload = JSON.stringify({ sites: sites, activeSiteId: activeSiteId });
     localStorage.setItem(STORAGE_KEY, payload);
     showSaved();
-  } catch(e) {
-    console.warn('保存失敗:', e);
-  }
+  } catch(e) {}
 }
-
 function showSaved() {
   var el = document.getElementById('saveIndicator');
   if (!el) return;
@@ -151,12 +148,10 @@ function showSaved() {
   if (el._t) clearTimeout(el._t);
   el._t = setTimeout(function() { el.textContent = ''; }, 2000);
 }
-
 function scheduleSave() {
   clearTimeout(saveTimer);
   saveTimer = setTimeout(saveData, 500);
 }
-
 function loadData() {
   try {
     var raw = localStorage.getItem(STORAGE_KEY);
@@ -172,24 +167,15 @@ function loadData() {
       if (!found) activeSiteId = sites[0].id;
       return true;
     }
-  } catch(e) {
-    console.warn('読込失敗:', e);
-  }
+  } catch(e) {}
   return false;
 }
 
-// ページを閉じる・更新する直前に必ず保存
-window.addEventListener('beforeunload', function() {
-  saveData();
-});
-// visibilityが隠れたとき（スマホでアプリ切替時）も保存
+window.addEventListener('beforeunload', function() { saveData(); });
 document.addEventListener('visibilitychange', function() {
-  if (document.visibilityState === 'hidden') {
-    saveData();
-  }
+  if (document.visibilityState === 'hidden') { saveData(); }
 });
 
-// ===== 計算 =====
 function calcRows(rows, bm) {
   var bmVal = parseFloat(bm) || 0;
   var ih = null;
@@ -226,7 +212,6 @@ function calcRows(rows, bm) {
   return result;
 }
 
-// ===== 描画 =====
 function render() { renderTabs(); renderMain(); }
 
 function renderTabs() {
@@ -240,7 +225,126 @@ function renderTabs() {
       var btn = document.createElement('button');
       btn.className = 'tab-btn' + (site.id === activeSiteId ? ' active' : '');
       btn.textContent = site.name;
-      btn.onclick = (function(sid) { return function() { activeSiteId = sid; render();
+      btn.onclick = (function(sid) {
+        return function() { activeSiteId = sid; render(); saveData(); };
+      })(site.id);
+      wrap.appendChild(btn);
+      if (sites.length > 1) {
+        var del = document.createElement('button');
+        del.className = 'tab-del';
+        del.textContent = 'x';
+        del.onclick = (function(sid) {
+          return function() { deleteSite(sid); };
+        })(site.id);
+        wrap.appendChild(del);
+      }
+      container.appendChild(wrap);
+    })(sites[i]);
+  }
+  var addBtn = document.createElement('button');
+  addBtn.className = 'tab-add';
+  addBtn.textContent = '+ 現場追加';
+  addBtn.onclick = openModal;
+  container.appendChild(addBtn);
+}
+
+function renderMain() {
+  var container = document.getElementById('mainContent');
+  var site = null;
+  for (var i = 0; i < sites.length; i++) {
+    if (sites[i].id === activeSiteId) { site = sites[i]; break; }
+  }
+  if (!site) { container.innerHTML = ''; return; }
+  var computed = calcRows(site.rows, site.bm);
+
+  var html = '<div class="bm-card">'
+    + '<span class="bm-label">基準高（BM）</span>'
+    + '<input class="bm-input" type="text" id="bmInput" value="' + esc(site.bm) + '" ' + NA + '>'
+    + '<span class="bm-unit">m</span></div>'
+    + '<div class="site-name-row">'
+    + '<span class="site-name-label">現場名</span>'
+    + '<input class="site-name-input" type="text" id="siteNameInput" value="' + esc(site.name) + '" maxlength="20" autocomplete="off"></div>'
+    + '<div class="table-card"><div class="table-wrap"><table><thead><tr>'
+    + '<th style="width:50px">測点</th>'
+    + '<th style="width:90px">後視\nBS</th>'
+    + '<th style="width:82px">器械高\nIH</th>'
+    + '<th style="width:90px">前視\nFS</th>'
+    + '<th style="width:82px">地盤高\nGH</th>'
+    + '<th style="width:82px">計画高</th>'
+    + '<th style="width:76px">差\nGH-計画高</th>'
+    + '<th style="width:86px">備考</th>'
+    + '<th style="width:36px"></th>'
+    + '</tr></thead><tbody id="tableBody">';
+
+  for (var j = 0; j < computed.length; j++) {
+    var row = computed[j];
+    var diffVal = row.diff !== '' ? parseFloat(row.diff) : null;
+    var diffClass = 'diff-empty', diffText = '-';
+    if (diffVal !== null) {
+      diffClass = diffVal > 0 ? 'diff-pos' : diffVal < 0 ? 'diff-neg' : 'diff-zero';
+      diffText = (diffVal > 0 ? '+' : '') + row.diff;
+    }
+    var ihClass = row.ih ? 'auto-cell auto-ih' : 'auto-cell auto-ih-empty';
+    var ghClass = row.gh ? 'auto-cell auto-gh' : 'auto-cell auto-gh-empty';
+    html += '<tr data-rowid="' + row.id + '">'
+      + '<td><input class="cell-input name" type="text" value="' + esc(row.no) + '" data-field="no" data-rowid="' + row.id + '" autocomplete="off"></td>'
+      + '<td><div class="input-wrap">'
+      + '<input class="cell-input' + (row.bs ? ' bs-filled' : '') + '" type="text" value="' + esc(row.bs) + '" data-field="bs" data-rowid="' + row.id + '" ' + NA + '>'
+      + '<button class="btn-pm" onclick="toggleSign(\'' + row.id + '\',\'bs\')">+-</button>'
+      + '</div></td>'
+      + '<td class="' + ihClass + '">' + (row.ih || '-') + '</td>'
+      + '<td><div class="input-wrap">'
+      + '<input class="cell-input' + (row.fs ? ' fs-filled' : '') + '" type="text" value="' + esc(row.fs) + '" data-field="fs" data-rowid="' + row.id + '" ' + NA + '>'
+      + '<button class="btn-pm" onclick="toggleSign(\'' + row.id + '\',\'fs\')">+-</button>'
+      + '</div></td>'
+      + '<td class="' + ghClass + '">' + (row.gh || '-') + '</td>'
+      + '<td><input class="cell-input" type="text" value="' + esc(row.planH) + '" data-field="planH" data-rowid="' + row.id + '" ' + NA + '></td>'
+      + '<td class="auto-cell ' + diffClass + '">' + diffText + '</td>'
+      + '<td><input class="cell-input remark" type="text" value="' + esc(row.remark) + '" data-field="remark" data-rowid="' + row.id + '" autocomplete="off"></td>'
+      + '<td><button class="btn-del-row" onclick="deleteRow(\'' + row.id + '\')">x</button></td>'
+      + '</tr>';
+  }
+
+  html += '</tbody></table></div>'
+    + '<div class="add-row-bar"><button class="btn-add-row" onclick="addRow()">+ 測点を追加</button></div></div>'
+    + '<div class="legend">'
+    + '<span><span class="dot" style="background:#7c3aed"></span>IH(自動計算)</span>'
+    + '<span><span class="dot" style="background:#065f46"></span>GH(自動計算)</span>'
+    + '<span><span class="dot" style="background:#dc2626"></span>差+(盛土)</span>'
+    + '<span><span class="dot" style="background:#2563eb"></span>差-(切土)</span>'
+    + '</div>';
+
+  container.innerHTML = html;
+
+  document.getElementById('bmInput').addEventListener('input', function(e) {
+    var s = null;
+    for (var i = 0; i < sites.length; i++) { if (sites[i].id === activeSiteId) { s = sites[i]; break; } }
+    if (s) { s.bm = e.target.value; rerenderComputed(s); scheduleSave(); }
+  });
+
+  document.getElementById('siteNameInput').addEventListener('input', function(e) {
+    var s = null;
+    for (var i = 0; i < sites.length; i++) { if (sites[i].id === activeSiteId) { s = sites[i]; break; } }
+    if (s) { s.name = e.target.value; renderTabs(); scheduleSave(); }
+  });
+
+  var inputs = document.querySelectorAll('[data-rowid][data-field]');
+  for (var k = 0; k < inputs.length; k++) {
+    inputs[k].addEventListener('input', function(e) {
+      var rowId = e.target.getAttribute('data-rowid');
+      var field = e.target.getAttribute('data-field');
+      var s = null;
+      for (var i = 0; i < sites.length; i++) { if (sites[i].id === activeSiteId) { s = sites[i]; break; } }
+      if (!s) return;
+      var row = null;
+      for (var j = 0; j < s.rows.length; j++) { if (s.rows[j].id === rowId) { row = s.rows[j]; break; } }
+      if (!row) return;
+      row[field] = e.target.value;
+      rerenderComputed(s);
+      scheduleSave();
+    });
+  }
+}
 
 function rerenderComputed(site) {
   var computed = calcRows(site.rows, site.bm);
@@ -249,9 +353,9 @@ function rerenderComputed(site) {
     var tr = document.querySelector('tr[data-rowid="' + row.id + '"]');
     if (!tr) continue;
     var cells = tr.querySelectorAll('td');
-    cells[2].textContent = row.ih || '—';
+    cells[2].textContent = row.ih || '-';
     cells[2].className = row.ih ? 'auto-cell auto-ih' : 'auto-cell auto-ih-empty';
-    cells[4].textContent = row.gh || '—';
+    cells[4].textContent = row.gh || '-';
     cells[4].className = row.gh ? 'auto-cell auto-gh' : 'auto-cell auto-gh-empty';
     var diffVal = row.diff !== '' ? parseFloat(row.diff) : null;
     if (diffVal !== null) {
@@ -259,7 +363,7 @@ function rerenderComputed(site) {
       cells[6].textContent = (diffVal > 0 ? '+' : '') + row.diff;
     } else {
       cells[6].className = 'auto-cell diff-empty';
-      cells[6].textContent = '—';
+      cells[6].textContent = '-';
     }
     var bsInput = tr.querySelector('[data-field="bs"]');
     if (bsInput) bsInput.className = 'cell-input' + (row.bs ? ' bs-filled' : '');
@@ -385,13 +489,10 @@ if (!loadData()) {
   saveData();
 }
 render();
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", function() {
-    navigator.serviceWorker.register("./sw.js").then(function(r) {
-      console.log("SW registered");
-    }).catch(function(e) {
-      console.warn("SW error:", e);
-    });
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('./sw.js');
   });
 }
 </script>
