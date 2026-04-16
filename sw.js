@@ -1,6 +1,6 @@
-const CACHE = 'sokuryo-v1';
+const CACHE = 'sokuryo-v2';
 const FILES = [
-  './測量野帳.html',
+  './index.html',
   './manifest.json'
 ];
 
@@ -28,7 +28,7 @@ self.addEventListener('fetch', function(e) {
           c.put(e.request, res.clone());
           return res;
         });
-      }).catch(function() { return caches.match('./測量野帳.html'); });
+      }).catch(function() { return caches.match('./index.html'); });
     })
   );
 });

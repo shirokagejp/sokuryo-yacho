@@ -2,7 +2,7 @@
   "name": "測量野帳",
   "short_name": "測量野帳",
   "description": "器高式 水準測量野帳アプリ",
-  "start_url": "./測量野帳.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#1a2332",
   "theme_color": "#1a2332",
