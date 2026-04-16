@@ -2,68 +2,58 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#1a2332">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="測量野帳">
 <title>測量野帳</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Noto Sans JP', sans-serif; background: #f0f2f5; min-height: 100vh; }
-
-  /* Header */
   .header { background: #1a2332; color: #fff; padding: 0 12px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
-  .header-inner { max-width: 100%; display: flex; align-items: center; justify-content: space-between; height: 50px; }
+  .header-inner { max-width: 100%; display: flex; align-items: center; justify-content: space-between; height: 54px; }
   .header-left { display: flex; align-items: center; gap: 8px; }
-  .header-icon { background: #f59e0b; border-radius: 6px; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
-  .header-title { font-weight: 700; font-size: 15px; letter-spacing: 0.05em; }
-  .header-sub { font-size: 10px; color: #8b9ab0; }
-  .btn-csv { background: #f59e0b; color: #1a2332; border: none; border-radius: 6px; padding: 6px 12px; font-weight: 700; font-size: 12px; cursor: pointer; white-space: nowrap; font-family: 'Noto Sans JP', sans-serif; }
-
-  /* Tabs */
+  .header-icon { background: #f59e0b; border-radius: 6px; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; }
+  .header-title { font-weight: 700; font-size: 16px; letter-spacing: 0.05em; }
+  .header-sub { font-size: 11px; color: #8b9ab0; }
+  .header-right { display: flex; align-items: center; gap: 6px; }
+  .btn-csv { background: #f59e0b; color: #1a2332; border: none; border-radius: 6px; padding: 8px 14px; font-weight: 700; font-size: 13px; cursor: pointer; white-space: nowrap; font-family: 'Noto Sans JP', sans-serif; }
+  .save-indicator { font-size: 11px; color: #6ee7b7; white-space: nowrap; }
   .tabs-bar { background: #243044; border-bottom: 1px solid #1a2332; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; }
   .tabs-inner { display: inline-flex; align-items: center; gap: 2px; padding: 6px 12px; min-width: 100%; }
-  .tab-btn { background: transparent; color: #8b9ab0; border: none; border-radius: 5px; padding: 5px 10px; font-size: 12px; cursor: pointer; font-family: 'Noto Sans JP', sans-serif; white-space: nowrap; }
+  .tab-btn { background: transparent; color: #8b9ab0; border: none; border-radius: 5px; padding: 7px 12px; font-size: 13px; cursor: pointer; font-family: 'Noto Sans JP', sans-serif; white-space: nowrap; }
   .tab-btn.active { background: #f59e0b; color: #1a2332; font-weight: 700; }
-  .tab-del { background: none; border: none; color: #556; cursor: pointer; padding: 0 2px; font-size: 12px; }
-  .tab-add { background: none; border: 1px dashed #445; color: #778; border-radius: 5px; padding: 4px 10px; font-size: 11px; cursor: pointer; font-family: 'Noto Sans JP', sans-serif; }
-  .tab-input { background: #1a2332; color: #fff; border: 1px solid #f59e0b; border-radius: 5px; padding: 3px 8px; font-size: 12px; width: 80px; font-family: 'Noto Sans JP', sans-serif; }
-
-  /* Main */
+  .tab-del { background: none; border: none; color: #556; cursor: pointer; padding: 0 3px; font-size: 14px; }
+  .tab-add { background: none; border: 1px dashed #445; color: #778; border-radius: 5px; padding: 6px 12px; font-size: 12px; cursor: pointer; font-family: 'Noto Sans JP', sans-serif; }
   .main { padding: 12px; max-width: 100%; }
-
-  /* BM Card */
-  .bm-card { background: #fff; border-radius: 10px; padding: 12px 14px; margin-bottom: 12px; display: flex; align-items: center; gap: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); flex-wrap: wrap; }
-  .bm-label { font-size: 13px; font-weight: 600; color: #374151; white-space: nowrap; }
-  .bm-input { font-family: 'Share Tech Mono', monospace; font-size: 16px; font-weight: 700; color: #1a2332; border: 2px solid #d1d5db; border-radius: 6px; padding: 6px 10px; width: 130px; text-align: right; }
+  .bm-card { background: #fff; border-radius: 10px; padding: 14px 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); flex-wrap: wrap; }
+  .bm-label { font-size: 14px; font-weight: 600; color: #374151; white-space: nowrap; }
+  .bm-input { font-family: 'Share Tech Mono', monospace; font-size: 18px; font-weight: 700; color: #1a2332; border: 2px solid #d1d5db; border-radius: 6px; padding: 8px 10px; width: 140px; text-align: right; }
   .bm-input:focus { outline: none; border-color: #f59e0b; }
-  .bm-unit { font-size: 13px; color: #9ca3af; }
-  .bm-hint { font-size: 10px; color: #9ca3af; margin-left: auto; }
-
-  /* Site name edit */
-  .site-name-row { background: #fff; border-radius: 10px; padding: 10px 14px; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
-  .site-name-label { font-size: 12px; color: #6b7280; white-space: nowrap; }
-  .site-name-input { border: 1px solid #e5e7eb; border-radius: 6px; padding: 5px 8px; font-size: 13px; font-family: 'Noto Sans JP', sans-serif; flex: 1; }
+  .bm-unit { font-size: 14px; color: #9ca3af; }
+  .site-name-row { background: #fff; border-radius: 10px; padding: 12px 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+  .site-name-label { font-size: 13px; color: #6b7280; white-space: nowrap; }
+  .site-name-input { border: 1px solid #e5e7eb; border-radius: 6px; padding: 8px 10px; font-size: 14px; font-family: 'Noto Sans JP', sans-serif; flex: 1; }
   .site-name-input:focus { outline: none; border-color: #f59e0b; }
-
-  /* Table wrapper */
   .table-card { background: #fff; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); overflow: hidden; }
   .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-
-  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
   thead tr { background: #1a2332; color: #fff; }
-  th { padding: 8px 4px; text-align: center; font-size: 10px; font-weight: 600; white-space: pre-line; line-height: 1.3; border-right: 1px solid #243044; }
+  th { padding: 10px 4px; text-align: center; font-size: 11px; font-weight: 600; white-space: pre-line; line-height: 1.3; border-right: 1px solid #243044; }
   th:last-child { border-right: none; }
   tbody tr:nth-child(even) { background: #f9fafb; }
   tbody tr { border-bottom: 1px solid #e5e7eb; }
-  td { padding: 3px; vertical-align: middle; }
-
-  .cell-input { border: 1px solid #e5e7eb; border-radius: 4px; padding: 5px 3px; font-size: 12px; font-family: 'Share Tech Mono', monospace; width: 100%; text-align: right; background: #fff; -webkit-appearance: none; }
+  td { padding: 4px 3px; vertical-align: middle; }
+  .cell-input { border: 1px solid #e5e7eb; border-radius: 4px; padding: 8px 4px; font-size: 14px; font-family: 'Share Tech Mono', monospace; width: 100%; text-align: right; background: #fff; -webkit-appearance: none; min-height: 38px; }
   .cell-input:focus { outline: none; border-color: #f59e0b; }
   .cell-input.bs-filled { background: #fffbeb; }
   .cell-input.fs-filled { background: #eff6ff; }
-  .cell-input.name { text-align: center; font-family: 'Noto Sans JP', sans-serif; }
-  .cell-input.remark { font-family: 'Noto Sans JP', sans-serif; text-align: left; }
-
-  .auto-cell { padding: 5px 6px; text-align: right; font-family: 'Share Tech Mono', monospace; font-weight: 700; font-size: 12px; }
+  .cell-input.name { text-align: center; font-family: 'Noto Sans JP', sans-serif; font-size: 13px; }
+  .cell-input.remark { font-family: 'Noto Sans JP', sans-serif; text-align: left; font-size: 13px; }
+  .auto-cell { padding: 8px 6px; text-align: right; font-family: 'Share Tech Mono', monospace; font-weight: 700; font-size: 13px; white-space: nowrap; }
   .auto-ih { color: #7c3aed; background: #f5f3ff; }
   .auto-ih-empty { color: #d1d5db; background: #fafafa; }
   .auto-gh { color: #065f46; background: #f0fdf4; }
@@ -72,34 +62,21 @@
   .diff-neg { color: #2563eb; font-weight: 700; }
   .diff-zero { color: #16a34a; font-weight: 700; }
   .diff-empty { color: #d1d5db; }
-
-  .btn-pm { background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 4px; padding: 0 4px; cursor: pointer; font-size: 10px; color: #6b7280; flex-shrink: 0; height: 28px; }
+  .btn-pm { background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 4px; padding: 0 6px; cursor: pointer; font-size: 13px; color: #6b7280; flex-shrink: 0; height: 38px; min-width: 28px; }
   .input-wrap { display: flex; gap: 2px; }
-
-  .btn-del-row { background: none; border: none; color: #dc2626; cursor: pointer; font-size: 16px; padding: 2px 4px; }
-
-  .add-row-bar { padding: 10px 12px; border-top: 1px solid #e5e7eb; }
-  .btn-add-row { background: #1a2332; color: #fff; border: none; border-radius: 6px; padding: 8px 16px; font-size: 13px; cursor: pointer; font-weight: 600; font-family: 'Noto Sans JP', sans-serif; width: 100%; }
-
-  /* Legend */
-  .legend { margin-top: 12px; display: flex; gap: 12px; flex-wrap: wrap; font-size: 10px; color: #6b7280; padding: 0 2px; }
+  .btn-del-row { background: none; border: none; color: #dc2626; cursor: pointer; font-size: 18px; padding: 4px 6px; }
+  .add-row-bar { padding: 12px; border-top: 1px solid #e5e7eb; }
+  .btn-add-row { background: #1a2332; color: #fff; border: none; border-radius: 8px; padding: 12px 16px; font-size: 14px; cursor: pointer; font-weight: 600; font-family: 'Noto Sans JP', sans-serif; width: 100%; }
+  .legend { margin-top: 12px; display: flex; gap: 12px; flex-wrap: wrap; font-size: 11px; color: #6b7280; padding: 0 2px; }
   .legend span { display: flex; align-items: center; gap: 3px; }
   .dot { width: 8px; height: 8px; border-radius: 2px; display: inline-block; }
-
-  /* New site form */
-  .new-site-form { display: inline-flex; gap: 4px; align-items: center; }
-  .new-site-input { background: #1a2332; color: #fff; border: 1px solid #f59e0b; border-radius: 5px; padding: 3px 8px; font-size: 12px; width: 90px; font-family: 'Noto Sans JP', sans-serif; }
-  .btn-site-add { background: #f59e0b; color: #1a2332; border: none; border-radius: 5px; padding: 4px 8px; font-size: 11px; font-weight: 700; cursor: pointer; font-family: 'Noto Sans JP', sans-serif; }
-  .btn-site-cancel { background: none; border: none; color: #8b9ab0; cursor: pointer; font-size: 12px; padding: 2px; }
-
-  /* Modal */
   .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 20px; }
   .modal { background: #fff; border-radius: 12px; padding: 20px; width: 100%; max-width: 320px; }
-  .modal h3 { font-size: 15px; font-weight: 700; margin-bottom: 12px; color: #1a2332; }
-  .modal input { border: 1px solid #d1d5db; border-radius: 6px; padding: 8px 10px; font-size: 14px; width: 100%; font-family: 'Noto Sans JP', sans-serif; margin-bottom: 12px; }
+  .modal h3 { font-size: 16px; font-weight: 700; margin-bottom: 12px; color: #1a2332; }
+  .modal input { border: 1px solid #d1d5db; border-radius: 6px; padding: 10px 12px; font-size: 16px; width: 100%; font-family: 'Noto Sans JP', sans-serif; margin-bottom: 12px; }
   .modal input:focus { outline: none; border-color: #f59e0b; }
   .modal-btns { display: flex; gap: 8px; }
-  .modal-btns button { flex: 1; padding: 8px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'Noto Sans JP', sans-serif; border: none; }
+  .modal-btns button { flex: 1; padding: 10px; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: 'Noto Sans JP', sans-serif; border: none; }
   .btn-confirm { background: #1a2332; color: #fff; }
   .btn-cancel { background: #f3f4f6; color: #374151; }
 </style>
@@ -109,13 +86,16 @@
 <div class="header">
   <div class="header-inner">
     <div class="header-left">
-      <div class="header-icon">📐</div>
+      <div class="header-icon">&#x1F4D0;</div>
       <div>
         <div class="header-title">測量野帳</div>
         <div class="header-sub">器高式 水準測量</div>
       </div>
     </div>
-    <button class="btn-csv" onclick="exportCSV()">⬇ CSV出力</button>
+    <div class="header-right">
+      <span class="save-indicator" id="saveIndicator"></span>
+      <button class="btn-csv" onclick="exportCSV()">&#x2B07; CSV</button>
+    </div>
   </div>
 </div>
 
@@ -125,11 +105,10 @@
 
 <div class="main" id="mainContent"></div>
 
-<!-- Modal for new site -->
 <div class="modal-overlay" id="modalOverlay" style="display:none">
   <div class="modal">
     <h3>現場を追加</h3>
-    <input type="text" id="modalInput" placeholder="現場名を入力" maxlength="20">
+    <input type="text" id="modalInput" placeholder="現場名を入力" maxlength="20" autocomplete="off">
     <div class="modal-btns">
       <button class="btn-cancel" onclick="closeModal()">キャンセル</button>
       <button class="btn-confirm" onclick="confirmAddSite()">追加</button>
@@ -138,337 +117,283 @@
 </div>
 
 <script>
-// ===== State =====
-let sites = [];
-let activeSiteId = null;
+var STORAGE_KEY = 'sokuryo_yacho_v1';
+var sites = [];
+var activeSiteId = null;
+var saveTimer = null;
 
 function uid() { return Math.random().toString(36).substr(2,9); }
-function round4(v) { return Math.round(v * 10000) / 10000; }
+function round3(v) { return Math.round(v * 1000) / 1000; }
 
 function newRow(no) {
   return { id: uid(), no: String(no), bs: '', fs: '', planH: '', remark: '' };
 }
-
 function newSite(name) {
-  const id = uid();
-  return { id, name, bm: '10.000', rows: [newRow(1)] };
+  var id = uid();
+  return { id: id, name: name, bm: '10.000', rows: [newRow(1)] };
 }
 
-// ===== Calc =====
-function calcRows(rows, bm) {
-  const bmVal = parseFloat(bm) || 0;
-  let ih = null;
-  const result = [];
-  for (let i = 0; i < rows.length; i++) {
-    const r = Object.assign({}, rows[i]);
-    const bs = r.bs !== '' ? parseFloat(r.bs) : null;
-    const fs = r.fs !== '' ? parseFloat(r.fs) : null;
-    const planH = r.planH !== '' ? parseFloat(r.planH) : null;
-    r.ih = ''; r.gh = ''; r.diff = '';
+// ===== 保存・読込 =====
+function saveData() {
+  try {
+    var payload = JSON.stringify({ sites: sites, activeSiteId: activeSiteId });
+    localStorage.setItem(STORAGE_KEY, payload);
+    showSaved();
+  } catch(e) {
+    console.warn('保存失敗:', e);
+  }
+}
 
+function showSaved() {
+  var el = document.getElementById('saveIndicator');
+  if (!el) return;
+  el.textContent = '✓ 保存済み';
+  if (el._t) clearTimeout(el._t);
+  el._t = setTimeout(function() { el.textContent = ''; }, 2000);
+}
+
+function scheduleSave() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(saveData, 500);
+}
+
+function loadData() {
+  try {
+    var raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return false;
+    var data = JSON.parse(raw);
+    if (data && data.sites && data.sites.length > 0) {
+      sites = data.sites;
+      activeSiteId = data.activeSiteId || sites[0].id;
+      var found = false;
+      for (var i = 0; i < sites.length; i++) {
+        if (sites[i].id === activeSiteId) { found = true; break; }
+      }
+      if (!found) activeSiteId = sites[0].id;
+      return true;
+    }
+  } catch(e) {
+    console.warn('読込失敗:', e);
+  }
+  return false;
+}
+
+// ページを閉じる・更新する直前に必ず保存
+window.addEventListener('beforeunload', function() {
+  saveData();
+});
+// visibilityが隠れたとき（スマホでアプリ切替時）も保存
+document.addEventListener('visibilitychange', function() {
+  if (document.visibilityState === 'hidden') {
+    saveData();
+  }
+});
+
+// ===== 計算 =====
+function calcRows(rows, bm) {
+  var bmVal = parseFloat(bm) || 0;
+  var ih = null;
+  var result = [];
+  for (var i = 0; i < rows.length; i++) {
+    var r = {};
+    for (var k in rows[i]) r[k] = rows[i][k];
+    var bs = r.bs !== '' ? parseFloat(r.bs) : null;
+    var fs = r.fs !== '' ? parseFloat(r.fs) : null;
+    var planH = r.planH !== '' ? parseFloat(r.planH) : null;
+    r.ih = ''; r.gh = ''; r.diff = '';
     if (i === 0) {
-      r.gh = String(bmVal);
-      if (bs !== null) { ih = round4(bmVal + bs); r.ih = String(ih); }
+      r.gh = bmVal.toFixed(3);
+      if (bs !== null) { ih = round3(bmVal + bs); r.ih = ih.toFixed(3); }
     } else {
       if (fs !== null && ih !== null) {
-        const gh = round4(ih - fs);
-        r.gh = String(gh);
-        if (bs !== null) { ih = round4(gh + bs); r.ih = String(ih); }
-      } else if (bs !== null) {
-        const prevGh = result[i-1]?.gh;
-        if (prevGh !== '' && prevGh !== undefined) {
-          const p = parseFloat(prevGh);
-          if (!isNaN(p)) { ih = round4(p + bs); r.ih = String(ih); r.gh = String(p); }
+        var gh = round3(ih - fs);
+        r.gh = gh.toFixed(3);
+        if (bs !== null) { ih = round3(gh + bs); r.ih = ih.toFixed(3); }
+      } else if (bs !== null && result.length > 0) {
+        var prevGh = result[result.length - 1].gh;
+        if (prevGh !== '') {
+          var p = parseFloat(prevGh);
+          if (!isNaN(p)) { ih = round3(p + bs); r.ih = ih.toFixed(3); r.gh = p.toFixed(3); }
         }
       }
     }
     if (r.gh !== '' && planH !== null) {
-      r.diff = String(round4(parseFloat(r.gh) - planH));
+      var dv = round3(parseFloat(r.gh) - planH);
+      r.diff = dv.toFixed(3);
     }
     result.push(r);
   }
   return result;
 }
 
-// ===== Render =====
-function render() {
-  renderTabs();
-  renderMain();
-}
+// ===== 描画 =====
+function render() { renderTabs(); renderMain(); }
 
 function renderTabs() {
-  const container = document.getElementById('tabsInner');
+  var container = document.getElementById('tabsInner');
   container.innerHTML = '';
-  sites.forEach(site => {
-    const wrap = document.createElement('div');
-    wrap.style.display = 'inline-flex';
-    wrap.style.alignItems = 'center';
-
-    const btn = document.createElement('button');
-    btn.className = 'tab-btn' + (site.id === activeSiteId ? ' active' : '');
-    btn.textContent = site.name;
-    btn.onclick = () => { activeSiteId = site.id; render(); };
-    wrap.appendChild(btn);
-
-    if (sites.length > 1) {
-      const del = document.createElement('button');
-      del.className = 'tab-del';
-      del.textContent = '×';
-      del.onclick = () => deleteSite(site.id);
-      wrap.appendChild(del);
-    }
-    container.appendChild(wrap);
-  });
-
-  const addBtn = document.createElement('button');
-  addBtn.className = 'tab-add';
-  addBtn.textContent = '＋ 現場追加';
-  addBtn.onclick = openModal;
-  container.appendChild(addBtn);
-}
-
-function renderMain() {
-  const container = document.getElementById('mainContent');
-  const site = sites.find(s => s.id === activeSiteId);
-  if (!site) { container.innerHTML = ''; return; }
-  const computed = calcRows(site.rows, site.bm);
-
-  let html = `
-  <div class="bm-card">
-    <span class="bm-label">📍 基準高（BM）</span>
-    <input class="bm-input" type="number" id="bmInput" value="${esc(site.bm)}" inputmode="decimal">
-    <span class="bm-unit">m</span>
-  </div>
-  <div class="site-name-row">
-    <span class="site-name-label">📁 現場名</span>
-    <input class="site-name-input" type="text" id="siteNameInput" value="${esc(site.name)}" maxlength="20">
-  </div>
-  <div class="table-card">
-    <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th style="width:46px">測点</th>
-          <th style="width:82px">後視\nBS</th>
-          <th style="width:76px">器械高\nIH</th>
-          <th style="width:82px">前視\nFS</th>
-          <th style="width:76px">地盤高\nGH</th>
-          <th style="width:76px">計画高</th>
-          <th style="width:70px">差\nGH-計画高</th>
-          <th style="width:80px">備考</th>
-          <th style="width:32px"></th>
-        </tr>
-      </thead>
-      <tbody id="tableBody">`;
-
-  computed.forEach((row, idx) => {
-    const diffVal = row.diff !== '' ? parseFloat(row.diff) : null;
-    let diffClass = 'diff-empty', diffText = '—';
-    if (diffVal !== null) {
-      diffClass = diffVal > 0 ? 'diff-pos' : diffVal < 0 ? 'diff-neg' : 'diff-zero';
-      diffText = (diffVal > 0 ? '+' : '') + row.diff;
-    }
-    const ihClass = row.ih ? 'auto-cell auto-ih' : 'auto-cell auto-ih-empty';
-    const ghClass = row.gh ? 'auto-cell auto-gh' : 'auto-cell auto-gh-empty';
-
-    html += `<tr data-rowid="${row.id}">
-      <td><input class="cell-input name" type="text" value="${esc(row.no)}" data-field="no" data-rowid="${row.id}" inputmode="text"></td>
-      <td><div class="input-wrap">
-        <input class="cell-input${row.bs?` bs-filled`:''}" type="number" value="${esc(row.bs)}" data-field="bs" data-rowid="${row.id}" inputmode="decimal">
-        <button class="btn-pm" onclick="toggleSign('${row.id}','bs')">±</button>
-      </div></td>
-      <td class="${ihClass}">${row.ih || '—'}</td>
-      <td><div class="input-wrap">
-        <input class="cell-input${row.fs?` fs-filled`:''}" type="number" value="${esc(row.fs)}" data-field="fs" data-rowid="${row.id}" inputmode="decimal">
-        <button class="btn-pm" onclick="toggleSign('${row.id}','fs')">±</button>
-      </div></td>
-      <td class="${ghClass}">${row.gh || '—'}</td>
-      <td><input class="cell-input" type="number" value="${esc(row.planH)}" data-field="planH" data-rowid="${row.id}" inputmode="decimal"></td>
-      <td class="auto-cell ${diffClass}">${diffText}</td>
-      <td><input class="cell-input remark" type="text" value="${esc(row.remark)}" data-field="remark" data-rowid="${row.id}"></td>
-      <td><button class="btn-del-row" onclick="deleteRow('${row.id}')">🗑</button></td>
-    </tr>`;
-  });
-
-  html += `</tbody></table></div>
-    <div class="add-row-bar">
-      <button class="btn-add-row" onclick="addRow()">＋ 測点を追加</button>
-    </div>
-  </div>
-  <div class="legend">
-    <span><span class="dot" style="background:#7c3aed"></span>IH（自動計算）</span>
-    <span><span class="dot" style="background:#065f46"></span>GH（自動計算）</span>
-    <span><span class="dot" style="background:#dc2626"></span>差＋（盛土）</span>
-    <span><span class="dot" style="background:#2563eb"></span>差－（切土）</span>
-    <span>※ ±ボタンでマイナス値入力可</span>
-  </div>`;
-
-  container.innerHTML = html;
-
-  // BM input
-  document.getElementById('bmInput').addEventListener('input', e => {
-    const site = sites.find(s => s.id === activeSiteId);
-    if (site) { site.bm = e.target.value; renderMain(); refocus('bmInput'); }
-  });
-
-  // Site name input
-  document.getElementById('siteNameInput').addEventListener('input', e => {
-    const site = sites.find(s => s.id === activeSiteId);
-    if (site) { site.name = e.target.value; renderTabs(); }
-  });
-
-  // Cell inputs
-  document.querySelectorAll('[data-rowid][data-field]').forEach(input => {
-    input.addEventListener('input', e => {
-      const rowId = e.target.dataset.rowid;
-      const field = e.target.dataset.field;
-      const site = sites.find(s => s.id === activeSiteId);
-      if (!site) return;
-      const row = site.rows.find(r => r.id === rowId);
-      if (!row) return;
-      row[field] = e.target.value;
-      // Re-render only computed cells
-      rerenderComputed(site);
-    });
-  });
-}
-
-let _focusTarget = null;
-function refocus(id) {
-  const el = document.getElementById(id);
-  if (el) { el.focus(); const v = el.value; el.value = ''; el.value = v; }
-}
+  for (var i = 0; i < sites.length; i++) {
+    (function(site) {
+      var wrap = document.createElement('div');
+      wrap.style.display = 'inline-flex';
+      wrap.style.alignItems = 'center';
+      var btn = document.createElement('button');
+      btn.className = 'tab-btn' + (site.id === activeSiteId ? ' active' : '');
+      btn.textContent = site.name;
+      btn.onclick = (function(sid) { return function() { activeSiteId = sid; render();
 
 function rerenderComputed(site) {
-  const computed = calcRows(site.rows, site.bm);
-  computed.forEach(row => {
-    const tr = document.querySelector(`tr[data-rowid="${row.id}"]`);
-    if (!tr) return;
-    const cells = tr.querySelectorAll('td');
-    // IH = 3rd td (index 2)
-    const ihTd = cells[2];
-    ihTd.textContent = row.ih || '—';
-    ihTd.className = row.ih ? 'auto-cell auto-ih' : 'auto-cell auto-ih-empty';
-    // GH = 5th td (index 4)
-    const ghTd = cells[4];
-    ghTd.textContent = row.gh || '—';
-    ghTd.className = row.gh ? 'auto-cell auto-gh' : 'auto-cell auto-gh-empty';
-    // diff = 7th td (index 6)
-    const diffTd = cells[6];
-    const diffVal = row.diff !== '' ? parseFloat(row.diff) : null;
+  var computed = calcRows(site.rows, site.bm);
+  for (var i = 0; i < computed.length; i++) {
+    var row = computed[i];
+    var tr = document.querySelector('tr[data-rowid="' + row.id + '"]');
+    if (!tr) continue;
+    var cells = tr.querySelectorAll('td');
+    cells[2].textContent = row.ih || '—';
+    cells[2].className = row.ih ? 'auto-cell auto-ih' : 'auto-cell auto-ih-empty';
+    cells[4].textContent = row.gh || '—';
+    cells[4].className = row.gh ? 'auto-cell auto-gh' : 'auto-cell auto-gh-empty';
+    var diffVal = row.diff !== '' ? parseFloat(row.diff) : null;
     if (diffVal !== null) {
-      diffTd.className = 'auto-cell ' + (diffVal > 0 ? 'diff-pos' : diffVal < 0 ? 'diff-neg' : 'diff-zero');
-      diffTd.textContent = (diffVal > 0 ? '+' : '') + row.diff;
+      cells[6].className = 'auto-cell ' + (diffVal > 0 ? 'diff-pos' : diffVal < 0 ? 'diff-neg' : 'diff-zero');
+      cells[6].textContent = (diffVal > 0 ? '+' : '') + row.diff;
     } else {
-      diffTd.className = 'auto-cell diff-empty';
-      diffTd.textContent = '—';
+      cells[6].className = 'auto-cell diff-empty';
+      cells[6].textContent = '—';
     }
-    // Update BS input class
-    const bsInput = tr.querySelector('[data-field="bs"]');
+    var bsInput = tr.querySelector('[data-field="bs"]');
     if (bsInput) bsInput.className = 'cell-input' + (row.bs ? ' bs-filled' : '');
-    const fsInput = tr.querySelector('[data-field="fs"]');
+    var fsInput = tr.querySelector('[data-field="fs"]');
     if (fsInput) fsInput.className = 'cell-input' + (row.fs ? ' fs-filled' : '');
-  });
+  }
 }
 
 function esc(v) {
-  return String(v ?? '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return String(v == null ? '' : v)
+    .replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
-// ===== Actions =====
 function addRow() {
-  const site = sites.find(s => s.id === activeSiteId);
+  var site = null;
+  for (var i = 0; i < sites.length; i++) { if (sites[i].id === activeSiteId) { site = sites[i]; break; } }
   if (!site) return;
   site.rows.push(newRow(site.rows.length + 1));
   render();
-  setTimeout(() => {
-    const rows = document.querySelectorAll('#tableBody tr');
-    const last = rows[rows.length - 1];
-    if (last) { const inp = last.querySelector('input'); if (inp) inp.focus(); }
+  saveData();
+  setTimeout(function() {
+    var rows = document.querySelectorAll('#tableBody tr');
+    var last = rows[rows.length - 1];
+    if (last) { var inp = last.querySelector('input'); if (inp) inp.focus(); }
   }, 50);
 }
 
 function deleteRow(rowId) {
-  const site = sites.find(s => s.id === activeSiteId);
+  var site = null;
+  for (var i = 0; i < sites.length; i++) { if (sites[i].id === activeSiteId) { site = sites[i]; break; } }
   if (!site || site.rows.length <= 1) return;
-  site.rows = site.rows.filter(r => r.id !== rowId);
+  var newRows = [];
+  for (var j = 0; j < site.rows.length; j++) { if (site.rows[j].id !== rowId) newRows.push(site.rows[j]); }
+  site.rows = newRows;
   render();
+  saveData();
 }
 
 function toggleSign(rowId, field) {
-  const site = sites.find(s => s.id === activeSiteId);
+  var site = null;
+  for (var i = 0; i < sites.length; i++) { if (sites[i].id === activeSiteId) { site = sites[i]; break; } }
   if (!site) return;
-  const row = site.rows.find(r => r.id === rowId);
+  var row = null;
+  for (var j = 0; j < site.rows.length; j++) { if (site.rows[j].id === rowId) { row = site.rows[j]; break; } }
   if (!row || row[field] === '') return;
-  const v = parseFloat(row[field]);
+  var v = parseFloat(row[field]);
   if (isNaN(v)) return;
-  row[field] = String(round4(-v));
+  row[field] = String(round3(-v));
   rerenderComputed(site);
-  const inp = document.querySelector(`[data-rowid="${rowId}"][data-field="${field}"]`);
+  saveData();
+  var inp = document.querySelector('[data-rowid="' + rowId + '"][data-field="' + field + '"]');
   if (inp) inp.value = row[field];
 }
 
 function deleteSite(siteId) {
   if (sites.length <= 1) return;
   if (!confirm('この現場を削除しますか？')) return;
-  sites = sites.filter(s => s.id !== siteId);
+  var newSites = [];
+  for (var i = 0; i < sites.length; i++) { if (sites[i].id !== siteId) newSites.push(sites[i]); }
+  sites = newSites;
   if (activeSiteId === siteId) activeSiteId = sites[0].id;
   render();
+  saveData();
 }
 
-// ===== Modal =====
 function openModal() {
   document.getElementById('modalOverlay').style.display = 'flex';
   document.getElementById('modalInput').value = '';
-  setTimeout(() => document.getElementById('modalInput').focus(), 100);
+  setTimeout(function() { document.getElementById('modalInput').focus(); }, 100);
 }
 function closeModal() {
   document.getElementById('modalOverlay').style.display = 'none';
 }
 function confirmAddSite() {
-  const name = document.getElementById('modalInput').value.trim();
+  var name = document.getElementById('modalInput').value.trim();
   if (!name) return;
-  const s = newSite(name);
+  var s = newSite(name);
   sites.push(s);
   activeSiteId = s.id;
   closeModal();
   render();
+  saveData();
 }
-document.getElementById('modalInput').addEventListener('keydown', e => {
+document.getElementById('modalInput').addEventListener('keydown', function(e) {
   if (e.key === 'Enter') confirmAddSite();
   if (e.key === 'Escape') closeModal();
 });
-document.getElementById('modalOverlay').addEventListener('click', e => {
+document.getElementById('modalOverlay').addEventListener('click', function(e) {
   if (e.target === document.getElementById('modalOverlay')) closeModal();
 });
 
-// ===== CSV Export =====
 function exportCSV() {
-  const site = sites.find(s => s.id === activeSiteId);
+  var site = null;
+  for (var i = 0; i < sites.length; i++) { if (sites[i].id === activeSiteId) { site = sites[i]; break; } }
   if (!site) return;
-  const computed = calcRows(site.rows, site.bm);
-  const header = ['測点', '後視(BS)', '器械高(IH)', '前視(FS)', '地盤高(GH)', '計画高', '差(GH-計画高)', '備考'];
-  const lines = [header.join(',')];
-  computed.forEach(r => {
-    lines.push([r.no, r.bs, r.ih, r.fs, r.gh, r.planH, r.diff, r.remark].map(v => `"${String(v).replace(/"/g,'""')}"`).join(','));
-  });
-  const bom = '\uFEFF';
-  const blob = new Blob([bom + lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
+  var computed = calcRows(site.rows, site.bm);
+  var header = ['測点','後視(BS)','器械高(IH)','前視(FS)','地盤高(GH)','計画高','差(GH-計画高)','備考'];
+  var lines = [header.join(',')];
+  for (var j = 0; j < computed.length; j++) {
+    var r = computed[j];
+    var cols = [r.no,r.bs,r.ih,r.fs,r.gh,r.planH,r.diff,r.remark];
+    var row = [];
+    for (var k = 0; k < cols.length; k++) {
+      row.push('"' + String(cols[k] == null ? '' : cols[k]).replace(/"/g,'""') + '"');
+    }
+    lines.push(row.join(','));
+  }
+  var blob = new Blob(['\uFEFF' + lines.join('\n')], {type:'text/csv;charset=utf-8;'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
   a.href = url;
-  a.download = `${site.name}_野帳.csv`;
+  a.download = site.name + '_野帳.csv';
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
 
-// ===== Init =====
-const s1 = newSite('現場①');
-sites.push(s1);
-activeSiteId = s1.id;
+if (!loadData()) {
+  var s1 = newSite('現場①');
+  sites.push(s1);
+  activeSiteId = s1.id;
+  saveData();
+}
 render();
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function() {
+    navigator.serviceWorker.register("./sw.js").then(function(r) {
+      console.log("SW registered");
+    }).catch(function(e) {
+      console.warn("SW error:", e);
+    });
+  });
+}
 </script>
 </body>
 </html>
